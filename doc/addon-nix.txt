@@ -1,0 +1,31 @@
+INSTALLATION:
+=============
+I recommend using my vim-addon-manager.
+You can also put the top directory of this pluign and its dependencies into a
+&runtime path (see vim-nix-addon-info.txt)
+
+FEATURES:
+=========
+
+- quick mappings to nix-instantiate .nix files. You can teach the .nix language
+  yourself or run tests easily.
+- gf mapping to jump to import files (automatically finding the default.nix)
+  or proposing to create those files
+- some snippets which can be used with snipMate plugin
+- folding for all-packages.nix (by ### lines)
+- settings stuff such as indentation characters tec
+
+SETUP:
+======
+
+put into your .vimrc:
+
+" this will define the correct maintainers line in meta tags:
+let g:nix_maintainer="YOURNAME"
+
+
+TODO:
+=====
+fix syntax and move the file into this repository (-> vim_configurable expression)
+
+historical note: some code was taken from my tovl into this repository
