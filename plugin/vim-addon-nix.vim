@@ -7,4 +7,5 @@ endfor
 " set filetype to nix for *.nix files:
 augroup DefaultNix
   autocmd BufRead,BufNewFile *.nix setlocal ft=nix
+  autocmd BufWritePost *.nix call vim_addon_nix#CheckSyntax()
 augroup end

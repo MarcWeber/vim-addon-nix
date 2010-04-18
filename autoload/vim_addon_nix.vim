@@ -1,12 +1,42 @@
+fun! vim_addon_nix#EF()
+  " I know that the first line doesn't match.. I don't know how to fix it!
+  return "%m\\,\\ at\\ \\`%f':%l:%c,"
+        \ ."%m\\ at\\ \\`%f:%l:%c':,"
+        \ ."%m\\ at\\ \\`%f'\\,\\ line\\ %l:,"
+        \ ."error:\\ %m\\,\\ in\\ `%f'"
+
+          error: syntax error, unexpected $end, expecting STR or DOLLAR_CURLY or '"', at `/home/marc/test.nix':2:1
+endf
+
+if !exists('g:nix_syntax_check_error_list')
+  " use location list by default
+  let g:nix_syntax_check_error_list = 'l'
+endif
+
+fun! vim_addon_nix#CheckSyntax()
+  let p = g:nix_syntax_check_error_list
+  if !exists('s:tmpfile')
+    let s:tmpfile = tempname()
+  endif
+  call system('nix-instantiate --parse-only '.shellescape(expand('%')).' &> '.s:tmpfile)
+  let succ = v:shell_error == 0
+  let old_was_error = exists('b:nix_was_error') && b:nix_was_error
+  let b:nix_was_error = !succ
+  " if there was an error or if privous run had an error
+  " load result into quickfix or error list
+  if !succ || old_was_error
+    exec 'set ef='.vim_addon_nix#EF()
+    exec p.'file '.s:tmpfile
+    exec succ ? p.'close' : p.'open'
+  endif
+endf
+
 " provide mapping running nix-instantiate (see vim-addon-actions, plugin/vim-addon-nix.vim)
 fun! vim_addon_nix#CompileRHS(command_args)
   let target = a:0 > 0 ? a:1 : ""
-  let ef= "%m\,\ at\ `%f':%l:%c,"
-        \ ."%m\ at\ `%f:%l:%c':,"
-        \ ."%m\ at\ `%f'\,\ line\ %l:,"
-        \ ."error:\ %m\,\ in\ `%f'"
+  let ef = vim_addon_nix#EF()
 
-  let args = actions#VerifyArgs(a:command_args)
+  let args = actions#VerifyArgs(a:command_args+[expand('%')])
   return "call bg#RunQF(".string(args).", 'c', ".string(ef).")"
 endfun
 
