@@ -1,11 +1,6 @@
 fun! vim_addon_nix#EF()
   " I know that the first line doesn't match.. I don't know how to fix it!
-  return "%m\\,\\ at\\ \\`%f':%l:%c,"
-        \ ."%m\\ at\\ \\`%f:%l:%c':,"
-        \ ."%m\\ at\\ \\`%f'\\,\\ line\\ %l:,"
-        \ ."error:\\ %m\\,\\ in\\ `%f'"
-
-          error: syntax error, unexpected $end, expecting STR or DOLLAR_CURLY or '"', at `/home/marc/test.nix':2:1
+  return "%m\\\\,\\ at\\ `%f':%l:%c"
 endf
 
 if !exists('g:nix_syntax_check_error_list')

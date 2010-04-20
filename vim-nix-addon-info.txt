@@ -9,6 +9,7 @@
     "tlib": {},
     "vim-addon-actions": {},
     "vim-addon-goto-thing-at-cursor": {},
+    "vim-addon-mw-util": {},
   },
   "description" : "some code assisting writing nix files"
 }
