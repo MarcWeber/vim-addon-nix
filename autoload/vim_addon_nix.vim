@@ -1,6 +1,10 @@
 fun! vim_addon_nix#EF()
-  " I know that the first line doesn't match.. I don't know how to fix it!
-  return "%m\\\\,\\ at\\ `%f':%l:%c"
+  " %m\\,\ at\ `%f':%l:%c
+  "
+  return "%m\\\\,\\ at\\ `%f':%l:%c,"
+        \ ."%m\\ at\\ \\`%f:%l:%c':,"
+        \ ."%m\\ at\\ \\`%f'\\\\\,\\ line\\ %l:,"
+        \ ."error:\\ %m\\\\,\\ in\\ `%f'"
 endf
 
 if !exists('g:nix_syntax_check_error_list')
@@ -20,7 +24,7 @@ fun! vim_addon_nix#CheckSyntax()
   " if there was an error or if privous run had an error
   " load result into quickfix or error list
   if !succ || old_was_error
-    exec 'set ef='.vim_addon_nix#EF()
+    exec 'set errorformat='.vim_addon_nix#EF()
     exec p.'file '.s:tmpfile
     exec succ ? p.'close' : p.'open'
   endif
