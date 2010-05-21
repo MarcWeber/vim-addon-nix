@@ -1,0 +1,21 @@
+snippet test_file
+	{
+	  system ? builtins.currentSystem
+	, stdenvType ? system
+	, bootStdenv ? null
+	, noSysDirs ? true
+	, gccWithCC ? true
+	, gccWithProfiling ? true
+	, config ? null
+	, crossSystem ? null
+	, platform ? (import ./platforms.nix).pc
+	}:
+	
+	let
+		args = { inherit system stdenvType bootStdenv noSysDirs gccWithCC config crossSystem platform; };
+		pkgs = import /etc/nixos/nixpkgs args;
+	in
+	with pkgs;
+	rec {
+	
+	}
