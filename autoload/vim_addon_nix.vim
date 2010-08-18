@@ -43,7 +43,8 @@ endfun
 fun! vim_addon_nix#gfHandler()
   let res = [
         \   expand(expand('%:h').'/'.matchstr(expand('<cWORD>'),'[^;()[\]]*')),
-        \   expand('%:h').'/'.matchstr(getline('.'), 'import\s*\zs[^;) \t]\+\ze')
+        \   expand('%:h').'/'.matchstr(getline('.'), 'import\s*\zs[^;) \t]\+\ze'),
+        \   expand('%:h').'/'.matchstr(getline('.'), 'callPackage\s*\zs[^;) \t]\+\ze')
         \ ]
 
   " if import string is a directory append '/default.nix' :
