@@ -1,3 +1,6 @@
+" exec scriptmanager#DefineAndBind('s:c','vim_addon_nix','{}')
+if !exists('vim_addon_nix') | let vim_addon_nix = {} | endif | let s:c = g:vim_addon_nix 
+
 fun! vim_addon_nix#EF()
   " %m\\,\ at\ `%f':%l:%c
   "
@@ -64,4 +67,54 @@ fun! vim_addon_nix#gfHandler()
     endif
   endif
   return res
+endf
+
+fun! vim_addon_nix#DirsToTag()
+  " probably it makes sense sense to tag ../* of dir
+  let dir = fnamemodify($NIXPKGS_ALL,':h:h:h')
+  if isdirectory(dir)
+  return [dir]
+endf
+
+fun! vim_addon_nix#NixRetagAllPackages()
+  for d in vim_addon_nix#DirsToTag()
+    call vcs_checkouts#ExecIndir([{'d': dir, 'c': s:c:tag_command.' .'}])
+  endfor
+endf
+
+" does a word match (for completion)
+fun! vim_addon_nix#Match(m)
+  let p = get(s:c.patterns, 'vim_regex','')
+  return a:m =~ '^'.s:c.base || (p != "" && a:m =~ p)
+endf
+
+fun! vim_addon_nix#FuzzyNixCompletion(findstart, base)
+  if a:findstart
+    let [bc,ac] = vim_addon_completion#BcAc()
+    let s:match_text = matchstr(bc, '\zs[^.()[\]{}\t ]*$')
+    let s:start = len(bc)-len(s:match_text)
+    return s:start
+  else
+    let s:c.base = a:base
+
+    let patterns = vim_addon_completion#AdditionalCompletionMatchPatterns(a:base
+        \ , "ocaml_completion", { 'match_beginning_of_string': 1})
+    let s:c.patterns = patterns
+
+    for f in values(s:c.completion_sources)
+      call funcref#Call(f)
+    endfor
+    return []
+endf
+
+fun! vim_addon_nix#TagBasedCompletion()
+  for m in taglist('^'. s:c.base[:0])
+    if complete_check()| return | endif
+    " ignore default.nix files. They usually only contain name, buildInputs etc
+    if  m.filename =~ 'default.nix$' || !vim_addon_nix#Match(m.name) | continue | endif
+    let fn = fnamemodify(m.filename, ':h:t').'/'.fnamemodify(m.filename, ':t')
+    let args_and_rest = matchstr(m.cmd, '^\/.\{-}\zs=.*\$\/')
+    let menu = printf('%-30s %s', fn, args_and_rest)
+    call complete_add({'word': m.name, 'menu': menu, 'info' : m.filename, 'dup': 1})
+  endfor
 endf

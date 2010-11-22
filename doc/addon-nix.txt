@@ -25,11 +25,21 @@ let g:nix_maintainer="YOURNAME"
 
 
 TIP:
+====
 Use a mapping like this to open all-packages.nix.
 It picks all-packages.nix of the current nixpkgs top level directory.
 If that doesn't exist NIXPKGS_ALL is used to find all-packages.nix
 noremap \aps : if filereadable('pkgs/top-level/all-packages.nix') <bar> e pkgs/top-level/all-packages.nix <bar> else <bar> exec 'e '.expand("$NIXPKGS_ALL") <bar> endif<cr>
 
+completion howto:
+=================
+a) Install ctagsWrapped.ctagsWrapped (from all-packages.nix) It contains fuzzy
+   regexs to find attr names.
+b) define NIXPKGS_ALL
+c) open Vim, run NixRetagAllPackages
+  (make sure that the tag files contain /.../ patterns instead of file names
+  because they will be used for completion for performance reasons
+ 
 TODO:
 =====
 fix syntax and move the file into this repository (-> vim_configurable expression)
