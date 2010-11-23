@@ -107,13 +107,64 @@ fun! vim_addon_nix#FuzzyNixCompletion(findstart, base)
     return []
 endf
 
+let s:builtins_dump = expand('<sfile>:h').'/builtins.dump'
+
+fun! vim_addon_nix#GetBuiltins()
+  let tmp = tempname()
+  call writefile(["builtins.attrNames builtins"], tmp)
+  " list of builtin names:
+  let g:result = substitute(join(split(system("nix-instantiate --eval-only --strict ".tmp),"\n"),""),'" "','","','g')
+  let g:names = eval(g:result)
+  " let g:manual = system("elinks --dump 'http://hydra.nixos.org/build/757694/download/1/manual/'")
+  let lines = split(g:manual, "\n")
+
+  let first_line = 1
+  while lines[first_line] !~ 'Built-in functions'
+    let first_line += 1
+  endwhile
+
+  let g:builtins = {}
+  for n in g:names
+    let regex = '^\s*\%(builtins\.\)\?'.n.'\s\+\zs.*'
+    let start = first_line
+    while start < len(lines) && lines[start] !~ regex
+      let start +=1
+    endwhile
+    if start == len(lines)
+      let menu = "no documentation found for ".n
+      let g:builtins[n] = {'word': n, 'menu': menu}
+    else
+      let args = matchstr( lines[start], regex )
+      let menu = printf('%-30s %s', "builtins", args)
+
+      let info = []
+      while lines[start+2] =~ '           '
+        call add(info, matchstr(lines[start+2], '\s*\zs.*'))
+        let start += 1
+      endwhile
+
+      let g:builtins[n] = {'word': n, 'menu': menu, 'info' : join(info," "), 'dup': 1}
+    endif
+  endfor
+  call writefile([string(g:builtins)], s:builtins_dump)
+endf
+
+fun! vim_addon_nix#BuiltinsCompletion()
+  " check completness by evaluating:
+  for [f,dict] in items(eval(readfile(s:builtins_dump)[0]))
+    if  !vim_addon_nix#Match(f) | continue | endif
+    call complete_add(dict)
+    unlet f dict
+  endfor
+endf
+
 fun! vim_addon_nix#TagBasedCompletion()
   for m in taglist('^'. s:c.base[:0])
     if complete_check()| return | endif
     " ignore default.nix files. They usually only contain name, buildInputs etc
     if  m.filename =~ 'default.nix$' || !vim_addon_nix#Match(m.name) | continue | endif
     let fn = fnamemodify(m.filename, ':h:t').'/'.fnamemodify(m.filename, ':t')
-    let args_and_rest = matchstr(m.cmd, '^\/.\{-}\zs=.*\$\/')
+    let args_and_rest = matchstr(m.cmd, '^\/.\{-}\zs=.*\ze\$\/')
     let menu = printf('%-30s %s', fn, args_and_rest)
     call complete_add({'word': m.name, 'menu': menu, 'info' : m.filename, 'dup': 1})
   endfor

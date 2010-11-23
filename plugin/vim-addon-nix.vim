@@ -3,6 +3,7 @@ if !exists('vim_addon_nix') | let vim_addon_nix = {} | endif | let s:c = g:vim_a
 
 let s:c.completion_sources = get(s:c,'completion_sources',{})
 let s:c.completion_sources.tag_based_completion = funcref#Function('vim_addon_nix#TagBasedCompletion')
+let s:c.completion_sources.builtin_completion = funcref#Function('vim_addon_nix#BuiltinsCompletion')
 let s:c.tag_command = get(s:c, 'tag_command', 'ctags-svn-wrapped -R')
 
 " register functions setting up nix-instantiate invokations for testing and
