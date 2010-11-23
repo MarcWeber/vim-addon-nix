@@ -95,9 +95,21 @@ fun! vim_addon_nix#FuzzyNixCompletion(findstart, base)
     let s:start = len(bc)-len(s:match_text)
     return s:start
   else
-    let s:c.base = a:base
+    let base = a:base
+    let s:c.context = ''
+    let contexts = {'b:': 'builtins', 'l:': 'lib'}
+    for [c, context] in items(contexts)
+      if base =~ '^'.c
+        let s:c.context = context
+        let base = base[len(c):]
+        break
+      endif
+      unlet c context
+    endfor
 
-    let patterns = vim_addon_completion#AdditionalCompletionMatchPatterns(a:base
+    let s:c.base = base
+
+    let patterns = vim_addon_completion#AdditionalCompletionMatchPatterns(base
         \ , "ocaml_completion", { 'match_beginning_of_string': 1})
     let s:c.patterns = patterns
 
@@ -150,6 +162,8 @@ fun! vim_addon_nix#GetBuiltins()
 endf
 
 fun! vim_addon_nix#BuiltinsCompletion()
+  if s:c.context != '' && s:c.context != "builtins" | return  | endif
+
   " check completness by evaluating:
   for [f,dict] in items(eval(readfile(s:builtins_dump)[0]))
     if  !vim_addon_nix#Match(f) | continue | endif
@@ -163,6 +177,9 @@ fun! vim_addon_nix#TagBasedCompletion()
     if complete_check()| return | endif
     " ignore default.nix files. They usually only contain name, buildInputs etc
     if  m.filename =~ 'default.nix$' || !vim_addon_nix#Match(m.name) | continue | endif
+
+    if s:c.context != '' && (s:c.context != "lib" || m.filename !~ '[/\\]lib[/\\]') | continue  | endif
+
     let fn = fnamemodify(m.filename, ':h:t').'/'.fnamemodify(m.filename, ':t')
     let args_and_rest = matchstr(m.cmd, '^\/.\{-}\zs=.*\ze\$\/')
     let menu = printf('%-30s %s', fn, args_and_rest)

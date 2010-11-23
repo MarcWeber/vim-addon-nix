@@ -39,6 +39,12 @@ b) define NIXPKGS_ALL
 c) open Vim, run NixRetagAllPackages
   (make sure that the tag files contain /.../ patterns instead of file names
   because they will be used for completion for performance reasons
+
+filtering completion results:
+
+  using l:get you'll only get matches from lib/*.nix
+  using b:... you'll only get matches form builtins
+
  
 TODO:
 =====
