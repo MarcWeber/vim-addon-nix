@@ -91,21 +91,27 @@ endf
 fun! vim_addon_nix#FuzzyNixCompletion(findstart, base)
   if a:findstart
     let [bc,ac] = vim_addon_completion#BcAc()
-    let s:match_text = matchstr(bc, '\zs[^.()[\]{}\t ]*$')
+    let s:match_text = matchstr(bc,               '\zs[^.()[\]{}\t ]*$')
+    let s:context =    matchstr(bc, '\zs[^.() \t[\]]\+\ze\.[^.()[\]{}\t ]*$')
+    if s:context !~ 'lib\|builtins'
+      let s:context = ''
+    endif
     let s:start = len(bc)-len(s:match_text)
     return s:start
   else
     let base = a:base
-    let s:c.context = ''
-    let contexts = {'b:': 'builtins', 'l:': 'lib'}
-    for [c, context] in items(contexts)
-      if base =~ '^'.c
-        let s:c.context = context
-        let base = base[len(c):]
-        break
-      endif
-      unlet c context
-    endfor
+    let s:c.context = s:context
+    if s:c.context != ''
+      let contexts = {'b:': 'builtins', 'l:': 'lib'}
+      for [c, context] in items(contexts)
+        if base =~ '^'.c
+          let s:c.context = context
+          let base = base[len(c):]
+          break
+        endif
+        unlet c context
+      endfor
+    endif
 
     let s:c.base = base
 
@@ -183,6 +189,6 @@ fun! vim_addon_nix#TagBasedCompletion()
     let fn = fnamemodify(m.filename, ':h:t').'/'.fnamemodify(m.filename, ':t')
     let args_and_rest = matchstr(m.cmd, '^\/.\{-}\zs=.*\ze\$\/')
     let menu = printf('%-30s %s', fn, args_and_rest)
-    call complete_add({'word': m.name, 'menu': menu, 'info' : m.filename, 'dup': 1})
+    call complete_add({'word': m.name, 'menu': menu, 'info' : menu."\n".m.filename, 'dup': 1})
   endfor
 endf

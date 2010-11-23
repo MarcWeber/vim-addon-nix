@@ -45,9 +45,17 @@ filtering completion results:
   using l:get you'll only get matches from lib/*.nix
   using b:... you'll only get matches form builtins
 
+  lib.
+  builtins.
+  will be recognized automatically.
+
  
 TODO:
 =====
 fix syntax and move the file into this repository (-> vim_configurable expression)
 
 historical note: some code was taken from my tovl into this repository
+
+BUGS:
+=====
+lib. will take too longe because taglist('^') takes forever
