@@ -2,9 +2,8 @@
 if !exists('vim_addon_nix') | let vim_addon_nix = {} | endif | let s:c = g:vim_addon_nix 
 
 fun! vim_addon_nix#EF()
-  " %m\\,\ at\ `%f':%l:%c
-  "
-  return "%m\\\\,\\ at\\ `%f':%l:%c,"
+  return   "%m\\\\,\\ at\\ `%f':%l:%c,"
+        \ ."%m\\\\,\\ at\\ `%f:%l:%c',"
         \ ."%m\\ at\\ \\`%f:%l:%c':,"
         \ ."%m\\ at\\ \\`%f'\\\\\,\\ line\\ %l:,"
         \ ."error:\\ %m\\\\,\\ in\\ `%f'"
