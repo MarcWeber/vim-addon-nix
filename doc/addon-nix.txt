@@ -9,8 +9,8 @@ FEATURES:
 
 - quick mappings to nix-instantiate .nix files. You can teach the .nix language
   yourself or run tests easily.
-- gf mapping to jump to import files (automatically finding the default.nix)
-  or proposing to create those files
+- \gf mapping to jump to import files (automatically finding the default.nix)
+  or proposing to create those files (see vim-addon-goto-thing-at-cursor)
 - some snippets which can be used with snipMate plugin
 - folding for all-packages.nix (by ### lines)
 - settings stuff such as indentation characters tec
