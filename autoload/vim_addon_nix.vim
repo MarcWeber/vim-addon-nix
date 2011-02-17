@@ -90,8 +90,8 @@ endf
 fun! vim_addon_nix#FuzzyNixCompletion(findstart, base)
   if a:findstart
     let [bc,ac] = vim_addon_completion#BcAc()
-    let s:match_text = matchstr(bc,               '\zs[^.()[\]{}\t ]*$')
-    let s:context =    matchstr(bc, '\zs[^.() \t[\]]\+\ze\.[^.()[\]{}\t ]*$')
+    let s:match_text = matchstr(bc,               '\zs[^{.()[\]{}\t ]*$')
+    let s:context =    matchstr(bc, '\zs[^{.() \t[\]]\+\ze\.[^.()[\]{}\t ]*$')
     if s:context !~ 'lib\|builtins'
       let s:context = ''
     endif
