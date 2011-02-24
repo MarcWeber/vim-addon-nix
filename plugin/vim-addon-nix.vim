@@ -27,3 +27,7 @@ call vim_addon_completion#RegisterCompletionFunc({
       \ 'scope' : 'nix',
       \ 'func': 'vim_addon_nix#FuzzyNixCompletion'
       \ })
+
+
+" smarter way to pen all-packages.nix:
+noremap \aps : if filereadable('pkgs/top-level/all-packages.nix') <bar> e pkgs/top-level/all-packages.nix <bar> else <bar> exec 'e '.expand("$NIXPKGS_ALL") <bar> endif<cr>
