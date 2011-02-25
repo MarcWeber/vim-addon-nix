@@ -13,4 +13,4 @@ call on_thing_handler#AddOnThingHandler('b', funcref#Function('vim_addon_nix#gfH
 
 inoremap <buffer> <C-x><C-n> <c-r>=vim_addon_completion#CompleteUsing('vim_addon_nix#FuzzyNixCompletion')<cr>
 " this search can be used so often and is so useful ..
-inoremap <buffer> <m-n> /^<space><space>
+noremap <buffer> <m-n> /^<space><space>
