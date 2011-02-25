@@ -43,11 +43,11 @@ endfun
 
 " (vim-addon-goto-thing-at-cursor, see plugin/vim-addon-nix.vim)
 fun! vim_addon_nix#gfHandler()
-  let res = [
-        \   expand(expand('%:h').'/'.matchstr(expand('<cWORD>'),'[^;()[\]]*')),
-        \   expand('%:h').'/'.matchstr(getline('.'), 'import\s*\zs[^;) \t]\+\ze'),
-        \   expand('%:h').'/'.matchstr(getline('.'), 'callPackage\s*\zs[^;) \t]\+\ze')
-        \ ]
+  let res = [ expand(expand('%:h').'/'.matchstr(expand('<cWORD>'),'[^;()[\]]*')) ]
+  for match in [matchstr(getline('.'), 'import\s*\zs[^;) \t]\+\ze'), matchstr(getline('.'), 'callPackage\s*\zs[^;) \t]\+\ze')]
+    if match == "" | continue | endif
+    call append(res, \   expand('%:h').'/'.match)
+  endfor
 
   " if import string is a directory append '/default.nix' :
   call map(res, 'v:val =~ '.string('\.nix').' ? v:val : v:val.'.string('/default.nix'))
