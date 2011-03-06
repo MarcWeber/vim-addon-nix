@@ -1,4 +1,4 @@
-" exec scriptmanager#DefineAndBind('s:c','vim_addon_nix','{}')
+" exec vam#DefineAndBind('s:c','vim_addon_nix','{}')
 if !exists('vim_addon_nix') | let vim_addon_nix = {} | endif | let s:c = g:vim_addon_nix 
 
 fun! vim_addon_nix#EF()
