@@ -92,7 +92,7 @@ fun! vim_addon_nix#FuzzyNixCompletion(findstart, base)
     let [bc,ac] = vim_addon_completion#BcAc()
     let s:match_text = matchstr(bc,               '\zs[^{.()[\]{}\t ]*$')
     let s:context =    matchstr(bc, '\zs[^{.() \t[\]]\+\ze\.[^.()[\]{}\t ]*$')
-    if s:context !~ 'lib\|builtins'
+    if s:context !~ 'lib\|builtins\|types'
       let s:context = ''
     endif
     let s:start = len(bc)-len(s:match_text)
@@ -101,9 +101,11 @@ fun! vim_addon_nix#FuzzyNixCompletion(findstart, base)
     let base = a:base
     let s:c.context = s:context
     if s:c.context != ''
-      let contexts = {'b:': 'builtins', 'l:': 'lib'}
+      " if you complete b: l: or t: you'll get those scopes only
+      let contexts = {'b:': 'builtins', 'l:': 'lib', 't:': 'types'}
       for [c, context] in items(contexts)
         if base =~ '^'.c
+          " overwrite context
           let s:c.context = context
           let base = base[len(c):]
           break
@@ -127,6 +129,7 @@ endf
 let s:builtins_dump = expand('<sfile>:h').'/builtins.dump'
 
 fun! vim_addon_nix#GetBuiltins()
+
   let tmp = tempname()
   call writefile(["builtins.attrNames builtins"], tmp)
   " list of builtin names:
@@ -178,12 +181,26 @@ fun! vim_addon_nix#BuiltinsCompletion()
 endf
 
 fun! vim_addon_nix#TagBasedCompletion()
+
+  if s:c.context == "builtins" | return  | endif
+
+  let break_on_context_missmatch  = '0'
+  if s:c.context == "lib"
+    let break_on_context_missmatch = "m.filename !~ '[/\\\\]lib[/\\\\]'"
+  elseif s:c.context == "types"
+    let break_on_context_missmatch = "m.filename !~ '[/\\\\]types.nix'"
+  endif
+
+  let break_on_context_missmatch = 'let do_break = '.break_on_context_missmatch
+
   for m in taglist('^'. s:c.base[:0])
     if complete_check()| return | endif
     " ignore default.nix files. They usually only contain name, buildInputs etc
     if  m.filename =~ 'default.nix$' || !vim_addon_nix#Match(m.name) | continue | endif
 
-    if s:c.context != '' && (s:c.context != "lib" || m.filename !~ '[/\\]lib[/\\]') | continue  | endif
+    exec break_on_context_missmatch
+    " can't use continue in exec
+    if do_break | continue | endif
 
     let fn = fnamemodify(m.filename, ':h:t').'/'.fnamemodify(m.filename, ':t')
     let args_and_rest = matchstr(m.cmd, '^\/.\{-}\zs=.*\ze\$\/')
