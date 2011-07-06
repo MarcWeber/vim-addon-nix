@@ -92,7 +92,7 @@ fun! vim_addon_nix#FuzzyNixCompletion(findstart, base)
     let [bc,ac] = vim_addon_completion#BcAc()
     let s:match_text = matchstr(bc,               '\zs[^{.()[\]{}\t ]*$')
     let s:context =    matchstr(bc, '\zs[^{.() \t[\]]\+\ze\.[^.()[\]{}\t ]*$')
-    if s:context !~ 'lib\|builtins\|types'
+    if s:context !~ 'lib\|builtins\|types\|maintainers'
       let s:context = ''
     endif
     let s:start = len(bc)-len(s:match_text)
@@ -102,7 +102,7 @@ fun! vim_addon_nix#FuzzyNixCompletion(findstart, base)
     let s:c.context = s:context
     if s:c.context != ''
       " if you complete b: l: or t: you'll get those scopes only
-      let contexts = {'b:': 'builtins', 'l:': 'lib', 't:': 'types'}
+      let contexts = {'b:': 'builtins', 'l:': 'lib', 't:': 'types','m:' : 'maintainers'}
       for [c, context] in items(contexts)
         if base =~ '^'.c
           " overwrite context
@@ -189,6 +189,8 @@ fun! vim_addon_nix#TagBasedCompletion()
     let break_on_context_missmatch = "m.filename !~ '[/\\\\]lib[/\\\\]'"
   elseif s:c.context == "types"
     let break_on_context_missmatch = "m.filename !~ '[/\\\\]types.nix'"
+  elseif s:c.context == "maintainers"
+    let break_on_context_missmatch = "m.filename !~ '[/\\\\]maintainers.nix'"
   endif
 
   let break_on_context_missmatch = 'let do_break = '.break_on_context_missmatch

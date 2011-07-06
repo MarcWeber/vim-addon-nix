@@ -44,9 +44,13 @@ filtering completion results:
 
   using l:get you'll only get matches from lib/*.nix
   using b:... you'll only get matches form builtins
+  using m:... you'll only get matches form maintainers
+  using t:... you'll only get matches form types
 
   lib.
   builtins.
+  types.
+  maintainers.
   will be recognized automatically.
 
  
