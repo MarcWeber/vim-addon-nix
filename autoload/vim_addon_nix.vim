@@ -92,7 +92,7 @@ fun! vim_addon_nix#FuzzyNixCompletion(findstart, base)
     let [bc,ac] = vim_addon_completion#BcAc()
     let s:match_text = matchstr(bc,               '\zs[^{.()[\]{}\t ]*$')
     let s:context =    matchstr(bc, '\zs[^{.() \t[\]]\+\ze\.[^.()[\]{}\t ]*$')
-    if s:context !~ 'lib\|builtins\|types\|maintainers'
+    if s:context !~ 'lib\|builtins\|types\|maintainers\|licenses'
       let s:context = ''
     endif
     let s:start = len(bc)-len(s:match_text)
@@ -187,6 +187,8 @@ fun! vim_addon_nix#TagBasedCompletion()
   let break_on_context_missmatch  = '0'
   if s:c.context == "lib"
     let break_on_context_missmatch = "m.filename !~ '[/\\\\]lib[/\\\\]'"
+  elseif s:c.context == "licenses"
+    let break_on_context_missmatch = "m.filename !~ '[/\\\\]licenses.nix'"
   elseif s:c.context == "types"
     let break_on_context_missmatch = "m.filename !~ '[/\\\\]types.nix'"
   elseif s:c.context == "maintainers"

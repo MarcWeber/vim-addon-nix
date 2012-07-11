@@ -19,3 +19,9 @@ snippet test_file
 	rec {
 	
 	}
+snippet en
+	enableParallelBuilding = true;
+snippet NO_PARALLEL
+	NO_PARALLEL_BUILD_${1:phaseName}
+	or
+	NUM_CORES=1

@@ -1,5 +1,6 @@
 " exec vam#DefineAndBind('s:c','vim_addon_nix','{}')
 if !exists('vim_addon_nix') | let vim_addon_nix = {} | endif | let s:c = g:vim_addon_nix 
+let s:c.complete_lhs = get(s:c, 'complete_lhs', '<c-x><c-o>')
 
 let s:c.completion_sources = get(s:c,'completion_sources',{})
 let s:c.completion_sources.tag_based_completion = funcref#Function('vim_addon_nix#TagBasedCompletion')
@@ -19,15 +20,6 @@ augroup DefaultNix
   autocmd BufRead,BufNewFile *.nix setlocal ft=nix | exec 'setlocal tags+='.join(map(vim_addon_nix#DirsToTag(),'",".v:val."/tags"'),"")
   autocmd BufWritePost *.nix call vim_addon_nix#CheckSyntax()
 augroup end
-
-
-call vim_addon_completion#RegisterCompletionFunc({
-      \ 'description' : 'some fuzzy completion for Vim',
-      \ 'completeopt' : 'preview,menu,menuone',
-      \ 'scope' : 'nix',
-      \ 'func': 'vim_addon_nix#FuzzyNixCompletion'
-      \ })
-
 
 " smarter way to pen all-packages.nix:
 noremap \aps : if filereadable('pkgs/top-level/all-packages.nix') <bar> e pkgs/top-level/all-packages.nix <bar> else <bar> exec 'e '.expand("$NIXPKGS_ALL") <bar> endif<cr>
