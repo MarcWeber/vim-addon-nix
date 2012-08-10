@@ -212,3 +212,60 @@ fun! vim_addon_nix#TagBasedCompletion()
     call complete_add({'word': m.name, 'menu': menu, 'info' : menu."\n".m.filename, 'dup': 1})
   endfor
 endf
+
+
+" option completion based on man page which you can generate automatically.
+fun! vim_addon_nix#OptionsCached() abort
+  if !has_key(s:c, 'options')
+    " I agree this is very fuzzy, quick and dirty, but works
+    let options = {}
+    Man configuration.nix
+
+    let key = ''
+    let gathered = []
+    for l in getline(0, '$')
+      if l =~ '^       \S'
+        " new section
+        if key != ''
+          let options[key] = {'description': gathered}
+        endif
+        let key = l[8:]
+        let gathered = []
+      else
+        call add(gathered, l)
+      endif
+    endfor
+
+    if key != ''
+      let options[key] = {'description': gathered}
+    endif
+
+    " quit man page
+    bw!
+    let s:c.options = options
+  endif
+  return s:c.options
+endf
+
+fun! vim_addon_nix#OptionCompletion(findstart, base)
+  if a:findstart
+    let [bc,ac] = vim_addon_completion#BcAc()
+    let s:match_text = matchstr(bc,               '\zs[^{()[\]{}\t ]*$')
+    let s:start = len(bc)-len(s:match_text)
+    return s:start
+  else
+    let base = a:base
+    let result = []
+
+    for [key,v] in items(vim_addon_nix#OptionsCached())
+      if key =~ a:base
+        let defined_at = get(filter(copy(v.description),'v:val =~ '.string('^               <') ),0,'')
+        let description = join(v.description,"\n")
+        if description =~ 'Obsolete name'
+          let defined_at .= ' obsolete'
+        endif
+        call add(result, {'word': key, 'menu': defined_at, 'info': description})
+      endif
+    endfor
+    return result
+endf

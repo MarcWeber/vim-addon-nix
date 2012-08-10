@@ -14,6 +14,9 @@ setlocal sw=2
 call on_thing_handler#AddOnThingHandler('b', funcref#Function('vim_addon_nix#gfHandler'))
 
 inoremap <buffer> <C-x><C-n> <c-r>=vim_addon_completion#CompleteUsing('vim_addon_nix#FuzzyNixCompletion')<cr>
+
+inoremap <buffer> <C-x><C-c> <c-r>=vim_addon_completion#CompleteUsing('vim_addon_nix#OptionCompletion')<cr>
+
 " this search can be used so often and is so useful ..
 noremap <buffer> <m-n> /^<space><space>
 
