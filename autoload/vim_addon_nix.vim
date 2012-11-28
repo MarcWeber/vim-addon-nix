@@ -229,7 +229,7 @@ fun! vim_addon_nix#OptionsCached() abort
         if key != ''
           let options[key] = {'description': gathered}
         endif
-        let key = l[8:]
+        let key = l[7:]
         let gathered = []
       else
         call add(gathered, l)
@@ -258,7 +258,7 @@ fun! vim_addon_nix#OptionCompletion(findstart, base)
     let result = []
 
     for [key,v] in items(vim_addon_nix#OptionsCached())
-      if key =~ a:base
+      if key =~? a:base
         let defined_at = get(filter(copy(v.description),'v:val =~ '.string('^               <') ),0,'')
         let description = join(v.description,"\n")
         if description =~ 'Obsolete name'

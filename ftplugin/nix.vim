@@ -13,12 +13,10 @@ setlocal sw=2
 
 call on_thing_handler#AddOnThingHandler('b', funcref#Function('vim_addon_nix#gfHandler'))
 
-inoremap <buffer> <C-x><C-n> <c-r>=vim_addon_completion#CompleteUsing('vim_addon_nix#FuzzyNixCompletion')<cr>
-
-inoremap <buffer> <C-x><C-c> <c-r>=vim_addon_completion#CompleteUsing('vim_addon_nix#OptionCompletion')<cr>
-
 " this search can be used so often and is so useful ..
 noremap <buffer> <m-n> /^<space><space>
 
-exec 'inoremap <silent><exec> '.s:c.complete_lhs
-      \ .' vim_addon_completion#CompleteUsing("vim_addon_nix#FuzzyNixCompletion","preview,menu,menuone")'
+call vim_addon_completion#InoremapCompletions(s:c, [
+ \ { 'setting_keys' : ['complete_lhs'], 'fun': 'vim_addon_nix#FuzzyNixCompletion'},
+ \ { 'setting_keys' : ['complete_lhs_option'], 'fun': 'vim_addon_nix#OptionCompletion'},
+ \ ] )
