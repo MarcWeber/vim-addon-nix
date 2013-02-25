@@ -14,7 +14,8 @@ FEATURES:
 - some snippets which can be used with snipMate plugin
 - folding for all-packages.nix (by ### lines)
 - settings stuff such as indentation characters tec
-- configuration.nix option completion based on man configuration.nix output
+- configuration.nix option completion based on man configuration.nix output [C2]
+- builtins. lib. maintainers. licenses. types. completion (based on tag files). [C1]
 
 SETUP:
 ======
@@ -32,8 +33,8 @@ It picks all-packages.nix of the current nixpkgs top level directory.
 If that doesn't exist NIXPKGS_ALL is used to find all-packages.nix
 noremap \aps : if filereadable('pkgs/top-level/all-packages.nix') <bar> e pkgs/top-level/all-packages.nix <bar> else <bar> exec 'e '.expand("$NIXPKGS_ALL") <bar> endif<cr>
 
-completion howto:
-=================
+[C1] completion howto:
+=====================
 a) Install ctagsWrapped.ctagsWrapped (from all-packages.nix) It contains fuzzy
    regexs to find attr names.
 b) define NIXPKGS_ALL
@@ -56,7 +57,12 @@ filtering completion results:
 
 
 configuration.nix option completion: c-x c-c
- 
+
+[C2] completion howto:
+=====================
+set nixos configuration option
+  nixosManual.enable = true; # however takes little time to build
+
 TODO:
 =====
 fix syntax and move the file into this repository (-> vim_configurable expression)
