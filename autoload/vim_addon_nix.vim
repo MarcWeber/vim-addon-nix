@@ -51,7 +51,7 @@ fun! vim_addon_nix#gfHandler()
 
   " if import string is a directory append '/default.nix' :
   " everything not having an extension is treated as directory
-  call map(res, 'v:val =~ '.string('\.[^.]\+$').' ? v:val : v:val.'.string('/default.nix'))
+  call map(res, 'v:val =~ '.string('\\.[^.]\\+$').' ? v:val : v:val.'.string('/default.nix'))
 
   let list = matchlist(getline('.'), '.*selectVersion\s\+\(\S*\)\s\+"\([^"]\+\)"')
   if (!empty(list))
