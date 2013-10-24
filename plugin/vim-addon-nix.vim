@@ -2,6 +2,7 @@
 if !exists('vim_addon_nix') | let vim_addon_nix = {} | endif | let s:c = g:vim_addon_nix 
 let s:c.complete_lhs = get(s:c, 'complete_lhs', '<c-x><c-o>')
 let s:c.complete_lhs_option = get(s:c, 'complete_lhs_option', '<c-x><c-c>')
+let s:c.nix_folding = get(s:c, 'nix_folding', 0)
 
 let s:c.completion_sources = get(s:c,'completion_sources',{})
 let s:c.completion_sources.tag_based_completion = funcref#Function('vim_addon_nix#TagBasedCompletion')

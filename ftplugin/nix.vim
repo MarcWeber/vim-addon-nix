@@ -1,6 +1,6 @@
 if !exists('vim_addon_nix') | let vim_addon_nix = {} | endif | let s:c = g:vim_addon_nix 
 
-if !exists('g:no_nix_folding')
+if s:c.nix_folding
   " don't fold if there are no heaaders (default.nix files)
   if search('###','nw') > 0
     setlocal foldexpr=getline(v:lnum)=~'###'?'>1':1
