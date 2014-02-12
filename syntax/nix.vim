@@ -48,3 +48,9 @@ syn sync maxlines=20000
 syn sync minlines=50000
 
 let b:current_syntax = "nix"
+
+" thanks to iElectric
+" scan backwards to find begining of multiline statements
+syn sync ccomment nixMultiLineComment minlines=10 maxlines=500
+syn sync ccomment nixStringIndented minlines=10 maxlines=500
+syn sync ccomment nixString maxlines=10
