@@ -1,14 +1,6 @@
 " exec vam#DefineAndBind('s:c','vim_addon_nix','{}')
 if !exists('vim_addon_nix') | let vim_addon_nix = {} | endif | let s:c = g:vim_addon_nix 
 
-fun! vim_addon_nix#EF()
-  return   "%m\\\\,\\ at\\ `%f':%l:%c,"
-        \ ."%m\\\\,\\ at\\ `%f:%l:%c',"
-        \ ."%m\\ at\\ \\`%f:%l:%c':,"
-        \ ."%m\\ at\\ \\`%f'\\\\\,\\ line\\ %l:,"
-        \ ."error:\\ %m\\\\,\\ in\\ `%f'"
-endf
-
 if !exists('g:nix_syntax_check_error_list')
   " use location list by default
   let g:nix_syntax_check_error_list = 'l'
@@ -26,7 +18,7 @@ fun! vim_addon_nix#CheckSyntax()
   " if there was an error or if privous run had an error
   " load result into quickfix or error list
   if !succ || old_was_error
-    exec 'set errorformat='.vim_addon_nix#EF()
+    Errorformat nix
     exec p.'file '.s:tmpfile
     exec succ ? p.'close' : p.'open'
   endif
