@@ -27,8 +27,7 @@ endf
 " provide mapping running nix-instantiate (see vim-addon-actions, plugin/vim-addon-nix.vim)
 fun! vim_addon_nix#CompileRHS(command_args)
   let target = a:0 > 0 ? a:1 : ""
-  let ef = vim_addon_nix#EF()
-
+  let ef = vim_addon_errorformats#QuoteForAssignment(vim_addon_errorformats#ErrorFormatLines('nix'))
   let args = actions#VerifyArgs(a:command_args+[expand('%')])
   return "call bg#RunQF(".string(args).", 'c', ".string(ef).")"
 endfun
