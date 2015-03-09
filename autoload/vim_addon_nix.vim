@@ -7,6 +7,9 @@ if !exists('g:nix_syntax_check_error_list')
 endif
 
 fun! vim_addon_nix#CheckSyntax()
+  if !filereadable(expand('%'))
+    return
+  endif
   let p = g:nix_syntax_check_error_list
   if !exists('s:tmpfile')
     let s:tmpfile = tempname()
