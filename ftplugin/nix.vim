@@ -16,7 +16,8 @@ call on_thing_handler#AddOnThingHandler('b', funcref#Function('vim_addon_nix#gfH
 " this search can be used so often and is so useful ..
 noremap <buffer> <m-n> /^<space><space>
 
-call vim_addon_completion#InoremapCompletions(s:c, [
- \ { 'setting_keys' : ['complete_lhs'], 'fun': 'vim_addon_nix#FuzzyNixCompletion'},
- \ { 'setting_keys' : ['complete_lhs_option'], 'fun': 'vim_addon_nix#OptionCompletion'},
- \ ] )
+" will rewrite this all using editor-cells
+" call vim_addon_completion#InoremapCompletions(s:c, [
+"  \ { 'setting_keys' : ['complete_lhs'], 'fun': 'vim_addon_nix#FuzzyNixCompletion'},
+"  \ { 'setting_keys' : ['complete_lhs_option'], 'fun': 'vim_addon_nix#OptionCompletion'},
+"  \ ] )

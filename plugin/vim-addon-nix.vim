@@ -24,4 +24,4 @@ augroup DefaultNix
 augroup end
 
 " smarter way to pen all-packages.nix:
-noremap \aps : if filereadable('pkgs/top-level/all-packages.nix') <bar> e pkgs/top-level/all-packages.nix <bar> else <bar> exec 'e '.expand("$NIXPKGS_ALL") <bar> endif<cr>
+noremap \aps : if filereadable('pkgs/top-level/all-packages.nix') <bar> e pkgs/top-level/all-packages.nix <bar> else <bar> exec 'e '.expand("$NIXPKGS_ALL").'/pkgs/top-level/all-packages.nix' <bar> endif<cr>
